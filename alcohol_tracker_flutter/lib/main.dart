@@ -46,7 +46,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  double _counter = 0;
 
   void _incrementCounter() {
     setState(() {
@@ -80,10 +80,12 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Stack(children: <Widget>[
-        Positioned(
-            top: 0,
-            right: 0,
+        Align(
+            alignment: Alignment.topLeft,
             child: IconButton(onPressed: _resetCounter, icon: Icon(Icons.refresh))),
+        Align(
+            alignment: Alignment.topRight,
+            child: IconButton(onPressed: () {}, icon: Icon(Icons.settings))),
         Center(
           // Center is a layout widget. It takes a single child and positions it
           // in the middle of the parent.
