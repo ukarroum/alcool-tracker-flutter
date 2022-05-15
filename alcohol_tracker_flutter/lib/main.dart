@@ -47,6 +47,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   double _counter = 0;
+  double _step = 1.0;
 
   void _incrementCounter() {
     setState(() {
@@ -85,7 +86,22 @@ class _MyHomePageState extends State<MyHomePage> {
             child: IconButton(onPressed: _resetCounter, icon: Icon(Icons.refresh))),
         Align(
             alignment: Alignment.topRight,
-            child: IconButton(onPressed: () {}, icon: Icon(Icons.settings))),
+            child: IconButton(onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    title: Text('Change default unit'),
+                    content: TextField(
+                      controller: TextEditingController()..text = _step.toStringAsFixed(1),
+                      keyboardType: TextInputType.number,
+                    ),
+                    actions: <Widget>[
+                      TextButton(onPressed: () => Navigator.pop(context, 'Cancel'), child: const Text('Cancel')),
+                      TextButton(onPressed: () => Navigator.pop(context, 'Ok'), child: const Text('OK'))
+                    ]
+                  )
+              );
+            }, icon: Icon(Icons.settings))),
         Center(
           // Center is a layout widget. It takes a single child and positions it
           // in the middle of the parent.
