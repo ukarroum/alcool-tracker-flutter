@@ -49,6 +49,16 @@ class _MyHomePageState extends State<MyHomePage> {
   double _counter = 0;
   double _step = 1.0;
 
+  TextEditingController _controller;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _controller = new TextEditingController();
+    _controller.text = _step.toStringAsFixed(1);
+    super.initState();
+  }
+
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -56,13 +66,19 @@ class _MyHomePageState extends State<MyHomePage> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-      _counter++;
+      _counter += _step;
     });
   }
 
   void _resetCounter() {
     setState(() {
       _counter = 0;
+    });
+  }
+
+  void setStep(double step) {
+    setState(() {
+      _step = step;
     });
   }
 
@@ -83,25 +99,37 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Stack(children: <Widget>[
         Align(
             alignment: Alignment.topLeft,
-            child: IconButton(onPressed: _resetCounter, icon: Icon(Icons.refresh))),
+            child: IconButton(
+                onPressed: _resetCounter, icon: Icon(Icons.refresh))),
         Align(
             alignment: Alignment.topRight,
-            child: IconButton(onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (_) => AlertDialog(
-                    title: Text('Change default unit'),
-                    content: TextField(
-                      controller: TextEditingController()..text = _step.toStringAsFixed(1),
-                      keyboardType: TextInputType.number,
-                    ),
-                    actions: <Widget>[
-                      TextButton(onPressed: () => Navigator.pop(context, 'Cancel'), child: const Text('Cancel')),
-                      TextButton(onPressed: () => Navigator.pop(context, 'Ok'), child: const Text('OK'))
-                    ]
-                  )
-              );
-            }, icon: Icon(Icons.settings))),
+            child: IconButton(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                              title: Text('Change default unit'),
+                              content: TextField(
+                                controller: _controller,
+                                //TextEditingController()..text = _step.toStringAsFixed(1),
+                                keyboardType: TextInputType.number,
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                    onPressed: () {
+                                      _controller.text = _step.toStringAsFixed(1);
+                                      Navigator.pop(context, 'Cancel');
+                                    },
+                                    child: const Text('Cancel')),
+                                TextButton(
+                                    onPressed: () {
+                                      setStep(double.parse(_controller.text));
+                                      Navigator.pop(context, 'Ok');
+                                    },
+                                    child: const Text('OK'))
+                              ]));
+                },
+                icon: Icon(Icons.settings))),
         Center(
           // Center is a layout widget. It takes a single child and positions it
           // in the middle of the parent.
