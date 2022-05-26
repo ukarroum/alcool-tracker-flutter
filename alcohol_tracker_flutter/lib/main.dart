@@ -48,6 +48,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   double _counter = 0;
   double _step = 1.0;
+  double _rate = 1.0;
 
   TextEditingController _controller;
 
@@ -154,7 +155,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 'Number of units:',
               ),
               Text(
-                '$_counter',
+                _counter.toStringAsFixed(1),
                 style: Theme.of(context).textTheme.headline4,
               ),
             ],
