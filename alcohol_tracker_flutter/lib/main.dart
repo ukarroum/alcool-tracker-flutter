@@ -9,6 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      restorationScopeId: 'app',
       title: 'Alcohol Tracker',
       theme: ThemeData(
         // This is the theme of your application.
@@ -45,12 +46,19 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  double _counter = 0;
+class _MyHomePageState extends State<MyHomePage> with RestorationMixin {
+  RestorableDouble _counter = RestorableDouble(0);
   double _step = 1.0;
-  double _rate = 1.0;
 
   TextEditingController _controller;
+
+  @override
+  String get restorationId => "HomePage";
+
+  @override
+  void restoreState(RestorationBucket oldBucket, bool initialRestore) {
+    registerForRestoration(_counter, 'count');
+  }
 
   @override
   void initState() {
@@ -67,13 +75,13 @@ class _MyHomePageState extends State<MyHomePage> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-      _counter += _step;
+      _counter.value += _step;
     });
   }
 
   void _resetCounter() {
     setState(() {
-      _counter = 0;
+      _counter.value = 0;
     });
   }
 
@@ -118,7 +126,8 @@ class _MyHomePageState extends State<MyHomePage> {
                               actions: <Widget>[
                                 TextButton(
                                     onPressed: () {
-                                      _controller.text = _step.toStringAsFixed(1);
+                                      _controller.text =
+                                          _step.toStringAsFixed(1);
                                       Navigator.pop(context, 'Cancel');
                                     },
                                     child: const Text('Cancel')),
@@ -155,7 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 'Number of units:',
               ),
               Text(
-                _counter.toStringAsFixed(1),
+                _counter.value.toStringAsFixed(1),
                 style: Theme.of(context).textTheme.headline4,
               ),
             ],
@@ -168,5 +177,11 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  @override
+  void dispose() {
+    _counter.dispose();
+    super.dispose();
   }
 }
