@@ -49,6 +49,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with RestorationMixin {
   RestorableDouble _counter = RestorableDouble(0);
   double _step = 1.0;
+  RestorableTimeOfDay _session_start = RestorableTimeOfDay(TimeOfDay.now());
 
   TextEditingController _controller;
 
@@ -58,6 +59,7 @@ class _MyHomePageState extends State<MyHomePage> with RestorationMixin {
   @override
   void restoreState(RestorationBucket oldBucket, bool initialRestore) {
     registerForRestoration(_counter, 'count');
+    registerForRestoration(_session_start, 'session_start');
   }
 
   @override
@@ -79,9 +81,12 @@ class _MyHomePageState extends State<MyHomePage> with RestorationMixin {
     });
   }
 
-  void _resetCounter() {
+  void _resetCounter() async {
+    final session_start = await showTimePicker(context: context, initialTime: _session_start.value);
+
     setState(() {
       _counter.value = 0;
+      _session_start.value = session_start;
     });
   }
 
@@ -182,6 +187,7 @@ class _MyHomePageState extends State<MyHomePage> with RestorationMixin {
   @override
   void dispose() {
     _counter.dispose();
+    _session_start.dispose();
     super.dispose();
   }
 }
